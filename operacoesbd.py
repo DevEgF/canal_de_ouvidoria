@@ -1,7 +1,7 @@
 import mysql.connector
 
 # Inicializa a conexão com o banco de dados
-def criarConexao(endereco, usuario, senha, bancodedados):
+def createConnection(endereco, usuario, senha, bancodedados):
     try:
         return mysql.connector.connect(
             host=endereco,
@@ -14,12 +14,12 @@ def criarConexao(endereco, usuario, senha, bancodedados):
         return None
 
 # Encerra a conexão com o banco de dados
-def encerrarConexao(connection):
+def shutDownConnection(connection):
     if connection:
         connection.close()
 
 # Insere dados no banco de dados com prepared statements e tratamento de exceções
-def insertNoBancoDados(connection, sql, dados):
+def insertInDataBase(connection, sql, dados):
     try:
         cursor = connection.cursor(prepared=True)
         cursor.execute(sql, dados)
@@ -34,7 +34,7 @@ def insertNoBancoDados(connection, sql, dados):
     return id
 
 # Lista dados do banco de dados com tratamento de exceções
-def listarBancoDados(connection, sql, params=None):
+def listDataBase(connection, sql, params=None):
     try:
         cursor = connection.cursor(prepared=True)
         if params is None:
@@ -50,7 +50,7 @@ def listarBancoDados(connection, sql, params=None):
     return results
 
 # Atualiza dados no banco de dados com tratamento de exceções
-def atualizarBancoDados(connection, sql, dados):
+def updateOnDataBase(connection, sql, dados):
     try:
         cursor = connection.cursor(prepared=True)
         cursor.execute(sql, dados)
@@ -65,7 +65,7 @@ def atualizarBancoDados(connection, sql, dados):
     return linhasAfetadas
 
 # Exclui dados no banco de dados com tratamento de exceções
-def excluirBancoDados(connection, sql, dados):
+def deleteOnDataBase(connection, sql, dados):
     try:
         cursor = connection.cursor(prepared=True)
         cursor.execute(sql, dados)

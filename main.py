@@ -1,7 +1,7 @@
-from operacoesbd import criarConexao, listarBancoDados, encerrarConexao, insertNoBancoDados, excluirBancoDados, \
-    atualizarBancoDados
+from operacoesbd import createConnection, listDataBase, shutDownConnection, insertInDataBase, deleteOnDataBase, \
+    updateOnDataBase
 
-conection = criarConexao('localhost', 'root', 'Egito76#', 'ouvidoria')
+connection = createConnection('localhost', 'root', 'Egito76#', 'ouvidoria')
 
 while True:
     print("-----------------------------")
@@ -19,10 +19,10 @@ while True:
 
         if option == 1:
             selectAllClaimsQuery = "SELECT * FROM claims"
-            allClaims = listarBancoDados(conection, selectAllClaimsQuery)
+            allClaims = listDataBase(connection, selectAllClaimsQuery)
 
             countClaimsQuery = "select count(*) from claims"
-            countResult = listarBancoDados(conection, countClaimsQuery)
+            countResult = listDataBase(connection, countClaimsQuery)
             totalClaims = countResult[0][0]
 
             if totalClaims == 0:
@@ -37,7 +37,7 @@ while True:
             query = "INSERT INTO claims (claim) VALUES (%s)"
             value = [newClaim]
 
-            insertedClaimInDataBase = insertNoBancoDados(conection, query, value)
+            insertedClaimInDataBase = insertInDataBase(connection, query, value)
             print("\nManifestação cadastrada com sucesso! O código é", insertedClaimInDataBase)
 
         elif option == 3:
@@ -45,7 +45,7 @@ while True:
             query = "select * from claims where id = %s"
 
             claimCode = [code]
-            researchClaims = listarBancoDados(conection, query, claimCode)
+            researchClaims = listDataBase(connection, query, claimCode)
             totalClaims = researchClaims[0][0]
 
             if code >= 1 and code <= totalClaims:
@@ -59,7 +59,7 @@ while True:
             query = "delete from claims where id = %s;"
 
             claimCode = [code]
-            deletedClaim = excluirBancoDados(conection, query, claimCode)
+            deletedClaim = deleteOnDataBase(connection, query, claimCode)
 
             if deletedClaim > 0:
                 print("\nManifestação removida com sucesso!")
@@ -74,7 +74,7 @@ while True:
 
             dataToUpdate = (claimSubstituted, code)
 
-            affectedRows = atualizarBancoDados(conection, query, dataToUpdate)
+            affectedRows = updateOnDataBase(connection, query, dataToUpdate)
 
             if affectedRows > 0:
                 print("\nManifestação substituída com sucesso!")
@@ -83,9 +83,9 @@ while True:
 
         elif option == 6:
             countClaimsQuery = "select count(*) from claims"
-            countResult = listarBancoDados(conection, countClaimsQuery)
+            countResult = listDataBase(connection, countClaimsQuery)
 
-            print("\nAtualmente, temos", countResult[0][0],"manifestações")
+            print("\nAtualmente, temos", countResult[0][0],"manifestações.")
 
         elif option == 7:
             print("\nSaindo do sistema de ouvidoria...Até logo!")
@@ -96,4 +96,4 @@ while True:
     else:
         print("\nPor favor, digite apenas números.\n")
 
-encerrarConexao(conection)
+shutDownConnection(connection)
