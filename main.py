@@ -7,7 +7,7 @@ while True:
     print("-----------------------------")
     print("\nCanal de Ouvidoria\n")
     print("-----------------------------")
-    print("1) Listar Manifestações \n2) Adicionar Manifestação \n3) Pesquisar Manifestação \n4) Remover Manifestação \n5) Alterar Manifestação \n6) Quantidade de manifestações \n7) Sair do programa")
+    print("1) Listar Manifestações \n2) Adicionar Manifestação \n3) Pesquisar Manifestação \n4) Pesquisar por palavra chave \n5) Remover Manifestação \n6) Alterar Manifestação \n7) Quantidade de manifestações \n8) Sair do programa")
     print("-----------------------------")
 
     entry = input("Digite uma opção: ")
@@ -55,6 +55,22 @@ while True:
                 print("O código informado da manifestação não existe!")
 
         elif option == 4:
+            keyword = input("Digite a palavra-chave que deseja buscar: ")
+
+            query = "SELECT id, claim FROM claims WHERE claim LIKE %s;"
+
+            search_param = (f"%{keyword}%",)
+
+            results = listDataBase(connection, query, search_param)
+
+            if results:
+                print(f"\n--- Manifestações encontradas com a palavra-chave '{keyword}' ---")
+                for item in results:
+                    print(item[0],"-",item[1])
+            else:
+                print(f"\nNenhuma manifestação encontrada com a palavra-chave '{keyword}'.")
+
+        elif option == 5:
             code = int(input("Digite o código da manifestação a ser deletada: "))
             query = "delete from claims where id = %s;"
 
@@ -66,7 +82,7 @@ while True:
             else:
                 print("\nO código informado não existe!")
 
-        elif option == 5:
+        elif option == 6:
             code = int(input("Digite o código da manifestação a ser substituída: "))
             claimSubstituted = input("Digite a nova manifestação: ")
 
@@ -81,13 +97,13 @@ while True:
             else:
                 print("\nO código informado não existe ou a manifestação já era a mesma!")
 
-        elif option == 6:
+        elif option == 7:
             countClaimsQuery = "select count(*) from claims"
             countResult = listDataBase(connection, countClaimsQuery)
 
             print("\nAtualmente, temos", countResult[0][0],"manifestações.")
 
-        elif option == 7:
+        elif option == 8:
             print("\nSaindo do sistema de ouvidoria...Até logo!")
             break
 
