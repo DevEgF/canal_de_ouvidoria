@@ -9,8 +9,7 @@ if connection:
         print("\n-----------------------------")
         print("\nCanal de Ouvidoria\n")
         print("-----------------------------")
-        print(
-            "1) Listar Manifestações \n2) Adicionar Manifestação \n3) Pesquisar Manifestação \n4) Pesquisar por palavra chave \n5) Remover Manifestação \n6) Alterar Manifestação \n7) Quantidade de manifestações \n8) Sair do programa")
+        print("1) Listar Manifestações \n2) Adicionar Manifestação \n3) Pesquisar Manifestação \n4) Pesquisar por palavra chave \n5) Remover Manifestação \n6) Alterar Manifestação \n7) Quantidade de manifestações \n8) Sair do programa")
         print("-----------------------------")
 
         entry = input("Digite uma opção: ")
