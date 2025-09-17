@@ -1,116 +1,45 @@
-from operacoesbd import createConnection, listDataBase, shutDownConnection, insertInDataBase, deleteOnDataBase, \
-    updateOnDataBase
+from ouvidoria import *
 
-connection = createConnection('localhost', 'root', '7613', 'ouvidoria')
+connection = createConnection('localhost', 'root', 'Egito76#', 'ouvidoria')
 
-if connection:
+while True:
+    showMenu()
 
-    while True:
-        print("\n-----------------------------")
-        print("\nCanal de Ouvidoria\n")
-        print("-----------------------------")
-        print("1) Listar Manifestações \n2) Adicionar Manifestação \n3) Pesquisar Manifestação \n4) Pesquisar por palavra chave \n5) Remover Manifestação \n6) Alterar Manifestação \n7) Quantidade de manifestações \n8) Sair do programa")
-        print("-----------------------------")
+    entry = input("Digite uma opção: ")
 
-        entry = input("Digite uma opção: ")
+    if entry.isdigit():
+        option = int(entry)
+        print("Opção selecionada:", option)
 
-        if entry.isdigit():
-            option = int(entry)
-            print("Opção selecionada:", option)
+        if option == 1:
+            listClaims(connection)
 
-            if option == 1:
-                selectAllClaimsQuery = "SELECT * FROM claims"
-                allClaims = listDataBase(connection, selectAllClaimsQuery)
+        elif option == 2:
+            insertNewClaim(connection)
 
-                countClaimsQuery = "select count(*) from claims"
-                countResult = listDataBase(connection, countClaimsQuery)
-                totalClaims = countResult[0][0]
+        elif option == 3:
+            researchClaimById(connection)
 
-                if totalClaims == 0:
-                    print("\nNão existem manifestações a serem exibidas\n")
-                else:
-                    print("\n--- Manifestações encontradas ---\n")
-                    for item in allClaims:
-                        print(item[0], "-", item[1])
+        elif option == 4:
+            researchClaimByKeyword(connection)
 
-            elif option == 2:
-                newClaim = input("\nDigite sua manifestação: ")
-                query = "INSERT INTO claims (claim) VALUES (%s)"
-                value = [newClaim]
+        elif option == 5:
+            deleteClaimById(connection)
 
-                insertedClaimInDataBase = insertInDataBase(connection, query, value)
-                print("\nManifestação cadastrada com sucesso! O código é", insertedClaimInDataBase)
+        elif option == 6:
+            updateClaimById(connection)
 
-            elif option == 3:
-                code = int(input("Digite o código da manifestação a ser pesquisada: "))
-                query = "select * from claims where id = %s"
-                claimCode = [code]
+        elif option == 7:
+            countResult = countClaimsInDatabase(connection)
+            print("\nAtualmente, temos", countResult, "manifestações.")
 
-                researchClaims = listDataBase(connection, query, claimCode)
+        elif option == 8:
+            print("\nSaindo do sistema de ouvidoria...Até logo!")
+            break
 
-                if researchClaims:
-                    for item in researchClaims:
-                        print("\nA manifestação registrada é:", item[1])
-                else:
-                    print("\nO código informado da manifestação não existe!")
-
-            elif option == 4:
-                keyword = input("Digite a palavra-chave que deseja buscar: ")
-                query = "SELECT * FROM claims WHERE claim LIKE %s"
-                search_param = [f"%{keyword}%"]
-
-                results = listDataBase(connection, query, search_param)
-
-                if results:
-                    print(f"\n--- Manifestações encontradas com a palavra-chave '{keyword}' ---\n")
-                    for item in results:
-                        print(item[0], "-", item[1])
-                else:
-                    print(f"\nNenhuma manifestação encontrada com a palavra-chave '{keyword}'.")
-
-            elif option == 5:
-                code = int(input("Digite o código da manifestação a ser deletada: "))
-                query = "delete from claims where id = %s"
-                claimCode = [code]
-
-                deletedClaim = deleteOnDataBase(connection, query, claimCode)
-
-                if deletedClaim > 0:
-                    print("\nManifestação removida com sucesso!")
-                else:
-                    print("\nO código informado não existe!")
-
-            elif option == 6:
-                code = int(input("Digite o código da manifestação a ser substituída: "))
-                claimSubstituted = input("Digite a nova manifestação: ")
-                query = "UPDATE claims SET claim = %s WHERE id = %s"
-
-                dataToUpdate = [claimSubstituted, code]
-
-                affectedRows = updateOnDataBase(connection, query, dataToUpdate)
-
-                if affectedRows > 0:
-                    print("\nManifestação substituída com sucesso!")
-                else:
-                    print("\nO código informado não existe ou a manifestação já era a mesma!")
-
-            elif option == 7:
-                countClaimsQuery = "select count(*) from claims"
-                countResult = listDataBase(connection, countClaimsQuery)
-
-                print("\nAtualmente, temos", countResult[0][0], "manifestações.")
-
-            elif option == 8:
-                print("\nSaindo do sistema de ouvidoria...Até logo!")
-                break
-
-            else:
-                print("\nOpção inválida! Por favor, digite um número entre 1 e 8!")
         else:
-            print("\nPor favor, digite apenas números.\n")
+            print("\nOpção inválida! Por favor, digite um número entre 1 e 8!")
+    else:
+        print("\nPor favor, digite apenas números.\n")
 
-    shutDownConnection(connection)
-
-else:
-    print("\nERRO: Não foi possível conectar ao banco de dados.")
-    print("Por favor, verifique os dados de conexão e se o servidor de banco de dados está no ar.")
+shutDownConnection(connection)
