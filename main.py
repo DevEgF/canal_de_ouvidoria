@@ -1,10 +1,9 @@
 from operacoesbd import createConnection, listDataBase, shutDownConnection, insertInDataBase, deleteOnDataBase, \
     updateOnDataBase
 
-connection = createConnection('localhost', 'root', 'Egito76#', 'ouvidoria')
+connection = createConnection('localhost', 'root', '7613', 'ouvidoria')
 
 if connection:
-    print("Conexão com o banco de dados estabelecida com sucesso!")
 
     while True:
         print("\n-----------------------------")
@@ -46,21 +45,19 @@ if connection:
             elif option == 3:
                 code = int(input("Digite o código da manifestação a ser pesquisada: "))
                 query = "select * from claims where id = %s"
-
                 claimCode = [code]
+
                 researchClaims = listDataBase(connection, query, claimCode)
 
                 if researchClaims:
                     for item in researchClaims:
                         print("\nA manifestação registrada é:", item[1])
                 else:
-                    print("O código informado da manifestação não existe!")
+                    print("\nO código informado da manifestação não existe!")
 
             elif option == 4:
                 keyword = input("Digite a palavra-chave que deseja buscar: ")
-
-                query = "SELECT * FROM claims WHERE claim LIKE %s;"
-
+                query = "SELECT * FROM claims WHERE claim LIKE %s"
                 search_param = [f"%{keyword}%"]
 
                 results = listDataBase(connection, query, search_param)
@@ -74,9 +71,9 @@ if connection:
 
             elif option == 5:
                 code = int(input("Digite o código da manifestação a ser deletada: "))
-                query = "delete from claims where id = %s;"
-
+                query = "delete from claims where id = %s"
                 claimCode = [code]
+
                 deletedClaim = deleteOnDataBase(connection, query, claimCode)
 
                 if deletedClaim > 0:
@@ -87,7 +84,6 @@ if connection:
             elif option == 6:
                 code = int(input("Digite o código da manifestação a ser substituída: "))
                 claimSubstituted = input("Digite a nova manifestação: ")
-
                 query = "UPDATE claims SET claim = %s WHERE id = %s"
 
                 dataToUpdate = [claimSubstituted, code]
