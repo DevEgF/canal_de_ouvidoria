@@ -4,7 +4,7 @@ from operacoesbd import createConnection, listDataBase, shutDownConnection, inse
 connection = createConnection('localhost', 'root', 'Egito76#', 'ouvidoria')
 
 while True:
-    print("-----------------------------")
+    print("\n-----------------------------")
     print("\nCanal de Ouvidoria\n")
     print("-----------------------------")
     print("1) Listar Manifestações \n2) Adicionar Manifestação \n3) Pesquisar Manifestação \n4) Pesquisar por palavra chave \n5) Remover Manifestação \n6) Alterar Manifestação \n7) Quantidade de manifestações \n8) Sair do programa")
@@ -28,7 +28,7 @@ while True:
             if totalClaims == 0:
                 print("\nNão existem manifestações a serem exibidas\n")
             else:
-                print("Lista de manifestações: \n")
+                print("\n--- Manifestações encontradas ---\n")
                 for item in allClaims:
                     print(item[0], "-", item[1])
 
@@ -57,14 +57,14 @@ while True:
         elif option == 4:
             keyword = input("Digite a palavra-chave que deseja buscar: ")
 
-            query = "SELECT id, claim FROM claims WHERE claim LIKE %s;"
+            query = "SELECT * FROM claims WHERE claim LIKE %s;"
 
             search_param = (f"%{keyword}%",)
 
             results = listDataBase(connection, query, search_param)
 
             if results:
-                print(f"\n--- Manifestações encontradas com a palavra-chave '{keyword}' ---")
+                print(f"\n--- Manifestações encontradas com a palavra-chave '{keyword}' ---\n")
                 for item in results:
                     print(item[0],"-",item[1])
             else:
