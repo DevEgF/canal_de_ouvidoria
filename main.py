@@ -3,113 +3,119 @@ from operacoesbd import createConnection, listDataBase, shutDownConnection, inse
 
 connection = createConnection('localhost', 'root', 'Egito76#', 'ouvidoria')
 
-while True:
-    print("\n-----------------------------")
-    print("\nCanal de Ouvidoria\n")
-    print("-----------------------------")
-    print("1) Listar Manifestações \n2) Adicionar Manifestação \n3) Pesquisar Manifestação \n4) Pesquisar por palavra chave \n5) Remover Manifestação \n6) Alterar Manifestação \n7) Quantidade de manifestações \n8) Sair do programa")
-    print("-----------------------------")
+if connection:
+    print("Conexão com o banco de dados estabelecida com sucesso!")
 
-    entry = input("Digite uma opção: ")
+    while True:
+        print("\n-----------------------------")
+        print("\nCanal de Ouvidoria\n")
+        print("-----------------------------")
+        print(
+            "1) Listar Manifestações \n2) Adicionar Manifestação \n3) Pesquisar Manifestação \n4) Pesquisar por palavra chave \n5) Remover Manifestação \n6) Alterar Manifestação \n7) Quantidade de manifestações \n8) Sair do programa")
+        print("-----------------------------")
 
-    if entry.isdigit():
-        option = int(entry)
+        entry = input("Digite uma opção: ")
 
-        print("Opção selecionada:",option)
+        if entry.isdigit():
+            option = int(entry)
+            print("Opção selecionada:", option)
 
-        if option == 1:
-            selectAllClaimsQuery = "SELECT * FROM claims"
-            allClaims = listDataBase(connection, selectAllClaimsQuery)
+            if option == 1:
+                selectAllClaimsQuery = "SELECT * FROM claims"
+                allClaims = listDataBase(connection, selectAllClaimsQuery)
 
-            countClaimsQuery = "select count(*) from claims"
-            countResult = listDataBase(connection, countClaimsQuery)
-            totalClaims = countResult[0][0]
+                countClaimsQuery = "select count(*) from claims"
+                countResult = listDataBase(connection, countClaimsQuery)
+                totalClaims = countResult[0][0]
 
-            if totalClaims == 0:
-                print("\nNão existem manifestações a serem exibidas\n")
+                if totalClaims == 0:
+                    print("\nNão existem manifestações a serem exibidas\n")
+                else:
+                    print("\n--- Manifestações encontradas ---\n")
+                    for item in allClaims:
+                        print(item[0], "-", item[1])
+
+            elif option == 2:
+                newClaim = input("\nDigite sua manifestação: ")
+                query = "INSERT INTO claims (claim) VALUES (%s)"
+                value = [newClaim]
+
+                insertedClaimInDataBase = insertInDataBase(connection, query, value)
+                print("\nManifestação cadastrada com sucesso! O código é", insertedClaimInDataBase)
+
+            elif option == 3:
+                code = int(input("Digite o código da manifestação a ser pesquisada: "))
+                query = "select * from claims where id = %s"
+
+                claimCode = [code]
+                researchClaims = listDataBase(connection, query, claimCode)
+
+                if researchClaims:
+                    for item in researchClaims:
+                        print("\nA manifestação registrada é:", item[1])
+                else:
+                    print("O código informado da manifestação não existe!")
+
+            elif option == 4:
+                keyword = input("Digite a palavra-chave que deseja buscar: ")
+
+                query = "SELECT * FROM claims WHERE claim LIKE %s;"
+
+                search_param = [f"%{keyword}%"]
+
+                results = listDataBase(connection, query, search_param)
+
+                if results:
+                    print(f"\n--- Manifestações encontradas com a palavra-chave '{keyword}' ---\n")
+                    for item in results:
+                        print(item[0], "-", item[1])
+                else:
+                    print(f"\nNenhuma manifestação encontrada com a palavra-chave '{keyword}'.")
+
+            elif option == 5:
+                code = int(input("Digite o código da manifestação a ser deletada: "))
+                query = "delete from claims where id = %s;"
+
+                claimCode = [code]
+                deletedClaim = deleteOnDataBase(connection, query, claimCode)
+
+                if deletedClaim > 0:
+                    print("\nManifestação removida com sucesso!")
+                else:
+                    print("\nO código informado não existe!")
+
+            elif option == 6:
+                code = int(input("Digite o código da manifestação a ser substituída: "))
+                claimSubstituted = input("Digite a nova manifestação: ")
+
+                query = "UPDATE claims SET claim = %s WHERE id = %s"
+
+                dataToUpdate = [claimSubstituted, code]
+
+                affectedRows = updateOnDataBase(connection, query, dataToUpdate)
+
+                if affectedRows > 0:
+                    print("\nManifestação substituída com sucesso!")
+                else:
+                    print("\nO código informado não existe ou a manifestação já era a mesma!")
+
+            elif option == 7:
+                countClaimsQuery = "select count(*) from claims"
+                countResult = listDataBase(connection, countClaimsQuery)
+
+                print("\nAtualmente, temos", countResult[0][0], "manifestações.")
+
+            elif option == 8:
+                print("\nSaindo do sistema de ouvidoria...Até logo!")
+                break
+
             else:
-                print("\n--- Manifestações encontradas ---\n")
-                for item in allClaims:
-                    print(item[0], "-", item[1])
-
-        elif option == 2:
-            newClaim = input("\nDigite sua manifestação: ")
-            query = "INSERT INTO claims (claim) VALUES (%s)"
-            value = [newClaim]
-
-            insertedClaimInDataBase = insertInDataBase(connection, query, value)
-            print("\nManifestação cadastrada com sucesso! O código é", insertedClaimInDataBase)
-
-        elif option == 3:
-            code = int(input("Digite o código da manifestação a ser pesquisada: "))
-            query = "select * from claims where id = %s"
-
-            claimCode = [code]
-            researchClaims = listDataBase(connection, query, claimCode)
-            totalClaims = researchClaims[0][0]
-
-            if code >= 1 and code <= totalClaims:
-                for item in researchClaims:
-                    print("\nA manifestação registrada é:", item[1])
-            else:
-                print("O código informado da manifestação não existe!")
-
-        elif option == 4:
-            keyword = input("Digite a palavra-chave que deseja buscar: ")
-
-            query = "SELECT * FROM claims WHERE claim LIKE %s;"
-
-            search_param = (f"%{keyword}%",)
-
-            results = listDataBase(connection, query, search_param)
-
-            if results:
-                print(f"\n--- Manifestações encontradas com a palavra-chave '{keyword}' ---\n")
-                for item in results:
-                    print(item[0],"-",item[1])
-            else:
-                print(f"\nNenhuma manifestação encontrada com a palavra-chave '{keyword}'.")
-
-        elif option == 5:
-            code = int(input("Digite o código da manifestação a ser deletada: "))
-            query = "delete from claims where id = %s;"
-
-            claimCode = [code]
-            deletedClaim = deleteOnDataBase(connection, query, claimCode)
-
-            if deletedClaim > 0:
-                print("\nManifestação removida com sucesso!")
-            else:
-                print("\nO código informado não existe!")
-
-        elif option == 6:
-            code = int(input("Digite o código da manifestação a ser substituída: "))
-            claimSubstituted = input("Digite a nova manifestação: ")
-
-            query = "UPDATE claims SET claim = %s WHERE id = %s"
-
-            dataToUpdate = (claimSubstituted, code)
-
-            affectedRows = updateOnDataBase(connection, query, dataToUpdate)
-
-            if affectedRows > 0:
-                print("\nManifestação substituída com sucesso!")
-            else:
-                print("\nO código informado não existe ou a manifestação já era a mesma!")
-
-        elif option == 7:
-            countClaimsQuery = "select count(*) from claims"
-            countResult = listDataBase(connection, countClaimsQuery)
-
-            print("\nAtualmente, temos", countResult[0][0],"manifestações.")
-
-        elif option == 8:
-            print("\nSaindo do sistema de ouvidoria...Até logo!")
-            break
-
+                print("\nOpção inválida! Por favor, digite um número entre 1 e 8!")
         else:
-            print("\nOpção inválida! Por favor, digite um número entre 1 e 6!")
-    else:
-        print("\nPor favor, digite apenas números.\n")
+            print("\nPor favor, digite apenas números.\n")
 
-shutDownConnection(connection)
+    shutDownConnection(connection)
+
+else:
+    print("\nERRO: Não foi possível conectar ao banco de dados.")
+    print("Por favor, verifique os dados de conexão e se o servidor de banco de dados está no ar.")
