@@ -13,27 +13,7 @@ def countClaimsInDatabase(connection) -> int:
     totalClaims = countResult[0][0]
     return totalClaims
 
-def listClaims(connection):
-    selectAllClaimsQuery = "SELECT * FROM claims"
-    allClaims = listDataBase(connection, selectAllClaimsQuery)
-
-    if countClaimsInDatabase(connection) == 0:
-        print("\nNão existem manifestações a serem exibidas")
-    else:
-        print("\n--- Manifestações encontradas ---\n")
-        for item in allClaims:
-            print("\n--- Detalhes da Manifestação ---")
-            print("Código:",item[0])
-            print("Tipo:",item[5])
-            print("Título:",item[1])
-            print("Descrição:",item[2])
-            print("Autor:", item[4])
-            print("Respondente:",item[3])
-            print("---------------------------------")
-
-def insertNewClaim(connection):
-    print("\n--- Adicionar Nova Manifestação ---")
-
+def selectedTypeClaim() -> str:
     claimsType = {
         1: "Reclamação",
         2: "Sugestão",
@@ -57,7 +37,31 @@ def insertNewClaim(connection):
             else:
                 print("\nOpção inválida! Por favor, escolha um dos números listados.")
         else:
-            print("\nEntrada inválida. Por favor, digite apenas um número.")
+            print("\nEntrada inválida. Por favor, digite apenas um número correspondente ao tipo.")
+    return type_selected
+
+def listClaims(connection):
+    selectAllClaimsQuery = "SELECT * FROM claims"
+    allClaims = listDataBase(connection, selectAllClaimsQuery)
+
+    if countClaimsInDatabase(connection) == 0:
+        print("\nNão existem manifestações a serem exibidas")
+    else:
+        print("\n--- Manifestações encontradas ---\n")
+        for item in allClaims:
+            print("\n--- Detalhes da Manifestação ---")
+            print("Código:",item[0])
+            print("Tipo:",item[5])
+            print("Título:",item[1])
+            print("Descrição:",item[2])
+            print("Autor:", item[4])
+            print("Respondente:",item[3])
+            print("---------------------------------")
+
+def insertNewClaim(connection):
+    print("\n--- Adicionar Nova Manifestação ---")
+
+    type_selected = selectedTypeClaim()
 
     print(f"\nTipo selecionado: {type_selected}")
 
@@ -96,29 +100,7 @@ def researchClaimById(connection):
 def researchClaimByType(connection):
     print("\n--- Pesquisar Manifestação por Tipo ---")
 
-    claims_type = {
-        1: "Reclamação",
-        2: "Sugestão",
-        3: "Elogio"
-    }
-
-    while True:
-        print("\nPor favor, selecione o tipo da manifestação a ser pesquisada:")
-        for code, type in claims_type.items():
-            print(f"{code}) {type}")
-
-        choose_type = input("\nDigite o número do tipo: ")
-
-        if choose_type.isdigit():
-            choose_cod = int(choose_type)
-
-            if choose_cod in claims_type:
-                type_selected = claims_type[choose_cod]
-                break
-            else:
-                print("\nOpção inválida! Por favor, escolha um dos números listados.")
-        else:
-            print("\nEntrada inválida. Por favor, digite apenas um número.")
+    type_selected = selectedTypeClaim()
 
     query = "SELECT * FROM claims WHERE type = %s"
 
