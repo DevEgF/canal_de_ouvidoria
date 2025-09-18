@@ -1,6 +1,6 @@
 from ouvidoria import *
 
-connection = createConnection('localhost', 'root', '7613', 'feedback')
+connection = createConnection('localhost', 'root', 'Egito76#', 'feedback')
 
 if connection:
     while True:
@@ -19,13 +19,13 @@ if connection:
                 insertNewClaim(connection)
 
             elif option == 3:
-                researchClaimById(connection)
+                researchClaimByCod(connection)
 
             elif option == 4:
                 researchClaimByType(connection)
 
             elif option == 5:
-                deleteClaimById(connection)
+                deleteClaimByCod(connection)
 
             elif option == 6:
                 countResult = countClaimsInDatabase(connection)

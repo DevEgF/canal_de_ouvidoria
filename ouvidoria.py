@@ -24,21 +24,21 @@ def selectedTypeClaim() -> str:
         print("\nPor favor, selecione o tipo da manifestação:")
 
         for code, type in claimsType.items():
-            print(f"{code}) {type}")
+            print(code, type)
 
-        choose_type = input("\nDigite o número do tipo: ")
+        chooseType = input("\nDigite o número do tipo: ")
 
-        if choose_type.isdigit():
-            choose_code = int(choose_type)
+        if chooseType.isdigit():
+            chooseCode = int(chooseType)
 
-            if choose_code in claimsType:
-                type_selected = claimsType[choose_code]
+            if chooseCode in claimsType:
+                typeSelected = claimsType[chooseCode]
                 break
             else:
                 print("\nOpção inválida! Por favor, escolha um dos números listados.")
         else:
             print("\nEntrada inválida. Por favor, digite apenas um número correspondente ao tipo.")
-    return type_selected
+    return typeSelected
 
 def listClaims(connection):
     selectAllClaimsQuery = "SELECT * FROM claims"
@@ -61,72 +61,85 @@ def listClaims(connection):
 def insertNewClaim(connection):
     print("\n--- Adicionar Nova Manifestação ---")
 
-    type_selected = selectedTypeClaim()
+    typeSelected = selectedTypeClaim()
 
-    print(f"\nTipo selecionado: {type_selected}")
+    print("Tipo selecionado:", typeSelected)
 
-    title = input("Digite o Título da manifestação: ")
-    description = input("Digite a Descrição detalhada: ")
+    title = input("Digite o título da manifestação: ")
+    description = input("Digite a descrição detalhada: ")
     author = input("Digite o seu nome (autor): ")
     respondent = input("Digite o seu respondente: ")
 
     query = "INSERT INTO claims (title, description, author, respondent, type) VALUES (%s, %s, %s, %s, %s)"
 
-    value = [title, description, author, respondent, type_selected]
+    value = [title, description, author, respondent, typeSelected]
 
     insertedClaimInDataBase = insertInDataBase(connection, query, value)
-    print(f"\nManifestação cadastrada com sucesso! O código é {insertedClaimInDataBase}")
+    print("Manifestação cadastrada com sucesso! O código é", insertedClaimInDataBase)
 
-def researchClaimById(connection):
-    code = int(input("Digite o código da manifestação a ser pesquisada: "))
-    query = "select * from claims where cod = %s"
-    claimCode = [code]
+def researchClaimByCod(connection):
+    code = input("Digite o código da manifestação a ser pesquisada: ")
 
-    researchClaims = listDataBase(connection, query, claimCode)
+    if code.isdigit():
+        cod = int(code)
+        query = "select * from claims where cod = %s"
+        claimCode = [cod]
 
-    if researchClaims:
-        for item in researchClaims:
-            print("\n--- Detalhes da Manifestação ---")
-            print("Código:", item[0])
-            print("Tipo:", item[5])
-            print("Título:", item[1])
-            print("Descrição:", item[2])
-            print("Autor:", item[3])
-            print("Respondente:", item[4])
-            print("---------------------------------")
+        researchClaims = listDataBase(connection, query, claimCode)
+
+        if researchClaims:
+            for item in researchClaims:
+                print("\n--- Detalhes da Manifestação ---")
+                print("Código:", item[0])
+                print("Tipo:", item[5])
+                print("Título:", item[1])
+                print("Descrição:", item[2])
+                print("Autor:", item[3])
+                print("Respondente:", item[4])
+                print("---------------------------------")
+        else:
+            print("\nO código informado da manifestação não existe!")
+
     else:
-        print("\nO código informado da manifestação não existe!")
+        print("\nPor favor, digite apenas números.\n")
 
 def researchClaimByType(connection):
     print("\n--- Pesquisar Manifestação por Tipo ---")
 
-    type_selected = selectedTypeClaim()
-
+    typeSelected = selectedTypeClaim()
     query = "SELECT * FROM claims WHERE type = %s"
+    searchParam = [typeSelected]
 
-    search_param = [type_selected]
-
-    results = listDataBase(connection, query, search_param)
+    results = listDataBase(connection, query, searchParam)
 
     if results:
-        print(f"\n--- Manifestações encontradas do tipo '{type_selected}' ---\n")
+        print("\n--- Manifestações encontradas do tipo",typeSelected,"---\n")
         for item in results:
-            print(f"Código: {item[0]}")
-            print(f"Título: {item[1]}")
-            print(f"Autor: {item[3]}")
-            print(f"Descrição: {item[2]}")
+            print("Código:",item[0])
+            print("Título:",item[1])
+            print("Autor:",item[3])
+            print("Descrição:",item[2])
             print("-----------------------------")
     else:
-        print(f"\nNenhuma manifestação encontrada para o tipo '{type_selected}'.")
+        print("\nNenhuma manifestação encontrada para o tipo",typeSelected,".")
 
-def deleteClaimById(connection):
-    code = int(input("Digite o código da manifestação a ser deletada: "))
-    query = "delete from claims where cod = %s"
-    claimCode = [code]
+def deleteClaimByCod(connection):
+    code = input("Digite o código da manifestação a ser deletada: ")
 
-    deletedClaim = deleteOnDataBase(connection, query, claimCode)
+    if code.isdigit():
+        cod = int(code)
 
-    if deletedClaim > 0:
-        print("\nManifestação removida com sucesso!")
+        hasExist = "SELECT cod FROM claims WHERE cod = %s"
+        claimCode = [cod]
+        existingClaim = listDataBase(connection, hasExist, claimCode)
+
+        if existingClaim:
+            queryDelete = "DELETE FROM claims WHERE cod = %s"
+            deleteOnDataBase(connection, queryDelete, claimCode)
+            print("\nManifestação removida com sucesso!")
+
+        else:
+            print("\nO código informado não existe!")
+
     else:
-        print("\nO código informado não existe!")
+        print("\nPor favor, digite apenas números.")
