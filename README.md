@@ -48,21 +48,21 @@ Siga os passos abaixo para configurar e rodar a aplicação em seu ambiente loca
     * **Passo C: Crie a Tabela `claims`**
         ```sql
         CREATE TABLE claims (
-            cod INT AUTO_INCREMENT PRIMARY KEY,
-            title VARCHAR(255) NOT NULL,
-            description TEXT NOT NULL,
-            author VARCHAR(100),
-            respondent VARCHAR(100),
-            type ENUM('Reclamação', 'Sugestão', 'Elogio') NOT NULL
+            cod int AUTO_INCREMENT,
+            title varchar(50),
+            description varchar(300),
+            author varchar(50),
+            respondent varchar(50),
+            type varchar(50),
         );
         ```
 
 3.  **Instalação das Dependências**
 
-    Este projeto requer a biblioteca `mysql-connector-python` para se comunicar com o MySQL. Para instalá-la, abra seu terminal e execute o comando abaixo:
-    ```bash
-    pip install mysql-connector-python
-    ```
+    Este projeto requer a biblioteca `mysql-connector-python` para se comunicar com o MySQL. Para instalá-la, basta baixar o raw e adicionar o arquivo `operacoesdb.py` na raiz do projeto:
+    
+    [Operações DB](https://github.com/daniel-abella/operacoesbd/blob/main/operacoesbd.py)
+    
 
 4.  **Configuração da Conexão**
 
