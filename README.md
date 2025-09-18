@@ -39,7 +39,7 @@ Siga os passos abaixo para configurar e rodar a aplicação em seu ambiente loca
 
     * **Passo A: Crie o Banco de Dados**
         ```sql
-        CREATE DATABASE feedback;
+        CREATE SCHEMA feedback;
         ```
     * **Passo B: Use o Banco de Dados**
         ```sql
