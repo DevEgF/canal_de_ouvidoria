@@ -1,39 +1,39 @@
 import mysql.connector
 
-# Inicializa a conexão com o banco de dados
-def createConnection(endereco, usuario, senha, bancodedados):
+# Initializes the database connection
+def createConnection(host, user, password, database):
     try:
         return mysql.connector.connect(
-            host=endereco,
-            user=usuario,
-            password=senha,
-            database=bancodedados
+            host=host,
+            user=user,
+            password=password,
+            database=database
         )
     except mysql.connector.Error as err:
-        print(f"Erro ao conectar ao banco de dados: {err}")
+        print(f"Error connecting to the database: {err}")
         return None
 
-# Encerra a conexão com o banco de dados
+# Closes the database connection
 def shutDownConnection(connection):
     if connection:
         connection.close()
 
-# Insere dados no banco de dados com prepared statements e tratamento de exceções
-def insertInDataBase(connection, sql, dados):
+# Inserts data into the database using prepared statements and exception handling
+def insertInDataBase(connection, sql, data):
     try:
         cursor = connection.cursor(prepared=True)
-        cursor.execute(sql, dados)
+        cursor.execute(sql, data)
         connection.commit()
-        id = cursor.lastrowid
+        last_row_id = cursor.lastrowid
     except mysql.connector.Error as err:
-        print(f"Erro ao inserir no banco de dados: {err}")
-        connection.rollback()  # Reverte a transação em caso de erro
+        print(f"Error inserting into the database: {err}")
+        connection.rollback()  # Reverts the transaction in case of an error
         return None
     finally:
         cursor.close()
-    return id
+    return last_row_id
 
-# Lista dados do banco de dados com tratamento de exceções
+# Lists data from the database with exception handling
 def listDataBase(connection, sql, params=None):
     try:
         cursor = connection.cursor(prepared=True)
@@ -43,38 +43,38 @@ def listDataBase(connection, sql, params=None):
             cursor.execute(sql, params)
         results = cursor.fetchall()
     except mysql.connector.Error as err:
-        print(f"Erro ao listar do banco de dados: {err}")
+        print(f"Error listing from the database: {err}")
         return []
     finally:
         cursor.close()
     return results
 
-# Atualiza dados no banco de dados com tratamento de exceções
-def updateOnDataBase(connection, sql, dados):
+# Updates data in the database with exception handling
+def updateOnDataBase(connection, sql, data):
     try:
         cursor = connection.cursor(prepared=True)
-        cursor.execute(sql, dados)
+        cursor.execute(sql, data)
         connection.commit()
-        linhasAfetadas = cursor.rowcount
+        affected_rows = cursor.rowcount
     except mysql.connector.Error as err:
-        print(f"Erro ao atualizar o banco de dados: {err}")
-        connection.rollback()  # Reverte a transação em caso de erro
+        print(f"Error updating the database: {err}")
+        connection.rollback()  # Reverts the transaction in case of an error
         return 0
     finally:
         cursor.close()
-    return linhasAfetadas
+    return affected_rows
 
-# Exclui dados no banco de dados com tratamento de exceções
-def deleteOnDataBase(connection, sql, dados):
+# Deletes data from the database with exception handling
+def deleteOnDataBase(connection, sql, data):
     try:
         cursor = connection.cursor(prepared=True)
-        cursor.execute(sql, dados)
+        cursor.execute(sql, data)
         connection.commit()
-        linhasAfetadas = cursor.rowcount
+        affected_rows = cursor.rowcount
     except mysql.connector.Error as err:
-        print(f"Erro ao excluir do banco de dados: {err}")
-        connection.rollback()  # Reverte a transação em caso de erro
+        print(f"Error deleting from the database: {err}")
+        connection.rollback()  # Reverts the transaction in case of an error
         return 0
     finally:
         cursor.close()
-    return linhasAfetadas
+    return affected_rows

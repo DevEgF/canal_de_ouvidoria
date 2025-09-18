@@ -1,42 +1,46 @@
 from ouvidoria import *
 
-connection = createConnection('localhost', 'root', 'Egito76#', 'feedback')
+connection = createConnection('localhost', 'root', '7613', 'feedback')
 
-while True:
-    showMenu()
+if connection:
+    while True:
+        showMenu()
 
-    entry = input("Digite uma opção: ")
+        entry = input("Digite uma opção: ")
 
-    if entry.isdigit():
-        option = int(entry)
-        print("Opção selecionada:", option)
+        if entry.isdigit():
+            option = int(entry)
+            print("Opção selecionada:", option)
 
-        if option == 1:
-            listClaims(connection)
+            if option == 1:
+                listClaims(connection)
 
-        elif option == 2:
-            insertNewClaim(connection)
+            elif option == 2:
+                insertNewClaim(connection)
 
-        elif option == 3:
-            researchClaimById(connection)
+            elif option == 3:
+                researchClaimById(connection)
 
-        elif option == 4:
-            researchClaimByType(connection)
+            elif option == 4:
+                researchClaimByType(connection)
 
-        elif option == 5:
-            deleteClaimById(connection)
+            elif option == 5:
+                deleteClaimById(connection)
 
-        elif option == 6:
-            countResult = countClaimsInDatabase(connection)
-            print("\nAtualmente, temos", countResult, "manifestações.")
+            elif option == 6:
+                countResult = countClaimsInDatabase(connection)
+                print("\nAtualmente, temos", countResult, "manifestações.")
 
-        elif option == 7:
-            print("\nSaindo do sistema de ouvidoria...Até logo!")
-            break
+            elif option == 7:
+                print("\nSaindo do sistema de ouvidoria...Até logo!")
+                break
 
+            else:
+                print("\nOpção inválida! Por favor, digite um número entre 1 e 8!")
         else:
-            print("\nOpção inválida! Por favor, digite um número entre 1 e 8!")
-    else:
-        print("\nPor favor, digite apenas números.\n")
+            print("\nPor favor, digite apenas números.\n")
 
-shutDownConnection(connection)
+    shutDownConnection(connection)
+
+else:
+    print("Connection refused")
