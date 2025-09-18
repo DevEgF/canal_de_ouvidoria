@@ -70,7 +70,7 @@ Siga os passos abaixo para configurar e rodar a aplicação em seu ambiente loca
 
     A linha deve se parecer com esta:
     ```python
-    connection = createConnection('localhost', 'root', 'Egito76#', 'feedback')
+    connection = createConnection('localhost', 'root', 'senha', 'feedback')
     ```
     Ajuste o `host`, `usuário`, `senha` e `banco de dados` conforme necessário.
 
