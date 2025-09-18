@@ -104,8 +104,8 @@ def researchClaimByType(connection):
 
     while True:
         print("\nPor favor, selecione o tipo da manifestação a ser pesquisada:")
-        for codigo, tipo in claims_type.items():
-            print(f"{codigo}) {tipo}")
+        for code, type in claims_type.items():
+            print(f"{code}) {type}")
 
         choose_type = input("\nDigite o número do tipo: ")
 
