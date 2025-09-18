@@ -36,7 +36,7 @@ if connection:
                 break
 
             else:
-                print("\nOpção inválida! Por favor, digite um número entre 1 e 8!")
+                print("\nOpção inválida! Por favor, digite um número entre 1 e 7!")
         else:
             print("\nPor favor, digite apenas números.\n")
 
