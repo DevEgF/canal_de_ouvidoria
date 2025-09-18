@@ -1,6 +1,6 @@
 from ouvidoria import *
 
-connection = createConnection('localhost', 'root', 'Egito76#', 'ouvidoria')
+connection = createConnection('localhost', 'root', 'Egito76#', 'feedback')
 
 while True:
     showMenu()
@@ -21,19 +21,16 @@ while True:
             researchClaimById(connection)
 
         elif option == 4:
-            researchClaimByKeyword(connection)
+            researchClaimByType(connection)
 
         elif option == 5:
             deleteClaimById(connection)
 
         elif option == 6:
-            updateClaimById(connection)
-
-        elif option == 7:
             countResult = countClaimsInDatabase(connection)
             print("\nAtualmente, temos", countResult, "manifestações.")
 
-        elif option == 8:
+        elif option == 7:
             print("\nSaindo do sistema de ouvidoria...Até logo!")
             break
 
