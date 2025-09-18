@@ -78,8 +78,7 @@ Siga os passos abaixo para configurar e rodar a aplicação em seu ambiente loca
 
     Com tudo pronto, navegue até a pasta do seu projeto pelo terminal e inicie o programa com o comando:
     ```bash
-    # Lembre-se de usar o nome real do seu arquivo Python
-    python seu_arquivo_principal.py
+    python main.py
     ```
     O menu interativo da Ouvidoria irá aparecer, pronto para uso!
 
